@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/users.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { UserDTO, UserUpdateDTO } from '../dto/user.dto';
+import { ErrorManager } from 'src/utils/error.manager';
 
 @Injectable()
 export class UsersService {
@@ -15,26 +16,40 @@ export class UsersService {
     try {
       return await this.userRepository.save(body);
     } catch(error) {
-      throw new Error(error);
+      throw ErrorManager.createSignatureError(error.message);
     }
   }
 
   public async findUsers(): Promise<UserEntity[]> {
     try {
-      return await this.userRepository.find();
+      const users: UserEntity[] = await this.userRepository.find();
+      if(users.length === 0) {
+        throw new ErrorManager({
+          type: 'NOT_FOUND',
+          message: 'There were not results found'
+        });
+      }
+      return users;
     } catch(error) {
-      throw new Error(error);
+      throw ErrorManager.createSignatureError(error.message);
     }
   }
 
   public async findUserById(id: string): Promise<UserEntity> {
     try {
-      return await this.userRepository
+      const user: UserEntity = await this.userRepository
         .createQueryBuilder('user')
         .where({id})
         .getOne();
+      if(!user) {
+        throw new ErrorManager({
+          type: 'NOT_FOUND',
+          message: 'The user was not found'
+        });
+      }
+      return user;
     } catch(error) {
-      throw new Error(error);
+      throw ErrorManager.createSignatureError(error.message);
     }
   }
 
@@ -44,11 +59,14 @@ export class UsersService {
         id, body
       );
       if (user.affected === 0) {
-        return undefined;
+        throw new ErrorManager({
+          type: 'BAD_REQUEST',
+          message: 'The user could not be updated'
+        });
       }
       return user;
     } catch(error) {
-      throw new Error(error);
+      throw ErrorManager.createSignatureError(error.message);
     }
   }
 
@@ -56,11 +74,14 @@ export class UsersService {
     try {
       const user: DeleteResult = await this.userRepository.delete(id);
       if (user.affected === 0) {
-        return undefined;
+        throw new ErrorManager({
+          type: 'BAD_REQUEST',
+          message: 'The user could not be deleted'
+        });
       }
       return user;
     } catch(error) {
-      throw new Error(error);
+      throw ErrorManager.createSignatureError(error.message);
     }
   }
 }
