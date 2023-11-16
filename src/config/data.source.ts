@@ -17,10 +17,11 @@ export const DataSourceConfig: DataSourceOptions = {
   database: configService.get('DB_NAME'),
   entities: [__dirname + '/../**/**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/../migrations/*{.ts,.js}'],
+  //migrations: [__dirname + '/../migrations/*{.ts,.js}'],
   synchronize: false,
   migrationsRun: true,
   logging: false,
-  namingStrategy: new SnakeNamingStrategy(),
+  namingStrategy: new SnakeNamingStrategy()
 };
 
 export const AppDS = new DataSource(DataSourceConfig);
