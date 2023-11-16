@@ -8,6 +8,6 @@ export class UsersController {
 
     @Get()
     getHello(): string {
-        return this.usersService.getHello();
+        return 'Hello';
     }
 }
