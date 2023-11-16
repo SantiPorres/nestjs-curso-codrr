@@ -12,10 +12,4 @@ export abstract class BaseEntity {
         name:'created_at'
     })
     createdAt: Date;
-
-    @Column({
-        type:'timestamp',
-        name:'updated_at'
-    })
-    updatedAt: Date;
 }
