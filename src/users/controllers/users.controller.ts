@@ -15,6 +15,7 @@ export class UsersController {
     @Get('')
     public async findAllUsers() {
         return await this.usersService.findUsers();
+        
     }
 
     @Get(':id')

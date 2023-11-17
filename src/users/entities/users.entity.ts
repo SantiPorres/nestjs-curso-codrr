@@ -7,6 +7,7 @@ import {
     OneToMany
 } from 'typeorm';
 import { UserProjectEntity } from './usersProjects.entity';
+import { Exclude } from "class-transformer";
 
 @Entity({name: 'users'})
 export class UserEntity extends BaseEntity implements IUser {
@@ -25,6 +26,7 @@ export class UserEntity extends BaseEntity implements IUser {
     @Column({ unique: true })
     username: string;
 
+    @Exclude()
     @Column()
     password: string;
 
