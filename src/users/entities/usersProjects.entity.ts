@@ -6,7 +6,7 @@ import { UserEntity } from "./users.entity";
 
 
 @Entity({name: 'users_projects'})
-export class UserProjectsEntity extends BaseEntity {
+export class UserProjectEntity extends BaseEntity {
     @Column({type: 'enum', enum: ACCESS_LEVEL })
     accessLevel: ACCESS_LEVEL
 
