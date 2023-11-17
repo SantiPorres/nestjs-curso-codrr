@@ -6,7 +6,7 @@ import {
     Entity,
     OneToMany
 } from 'typeorm';
-import { UserProjectsEntity } from './usersProjects.entity';
+import { UserProjectEntity } from './usersProjects.entity';
 
 @Entity({name: 'users'})
 export class UserEntity extends BaseEntity implements IUser {
@@ -32,8 +32,8 @@ export class UserEntity extends BaseEntity implements IUser {
     role: ROLES;
 
     @OneToMany(
-        ()=> UserProjectsEntity, 
-        (usersProjects)=> usersProjects.user,
+        ()=> UserProjectEntity, 
+        (usersProject)=> usersProject.user,
     )
-    projectsIncludes: UserProjectsEntity[]
+    projectsIncludes: UserProjectEntity[]
 }

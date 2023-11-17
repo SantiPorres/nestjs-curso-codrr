@@ -63,7 +63,7 @@ export class UserUpdateDTO {
     role: ROLES;
 }
 
-export class UserToProject {
+export class UserToProjectDTO {
     @IsNotEmpty()
     @IsEnum(ACCESS_LEVEL)
     accessLevel: ACCESS_LEVEL;
