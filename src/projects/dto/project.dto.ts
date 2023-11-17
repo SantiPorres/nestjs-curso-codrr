@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class ProjectDTO {
     @IsNotEmpty()
@@ -11,11 +11,11 @@ export class ProjectDTO {
 }
 
 export class ProjectUpdateDTO {
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     name: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     description: string;
 }

@@ -1,7 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ProjectsService } from '../services/projects.service';
 import { ProjectDTO, ProjectUpdateDTO } from '../dto/project.dto';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { AccessLevelGuard } from 'src/auth/guards/access-level.guard';
+import { AccessLevel } from 'src/auth/decorators/access-level.decorator';
 
+@UseGuards(AuthGuard, RolesGuard, AccessLevelGuard)
 @Controller('projects')
 export class ProjectsController {
 
@@ -17,18 +22,19 @@ export class ProjectsController {
         return await this.projectServices.findProjects();
     }
 
-    @Get(':id')
-    public async findProjectById(@Param('id') id: string) {
+    @Get(':projectId')
+    public async findProjectById(@Param('projectId') id: string) {
         return await this.projectServices.findProjectById(id);
     }
 
-    @Patch(':id')
-    public async updateProject(@Param('id') id: string, @Body() body: ProjectUpdateDTO) {
+    @AccessLevel(50)
+    @Patch(':projectId')
+    public async updateProject(@Param('projectId') id: string, @Body() body: ProjectUpdateDTO) {
         return await this.projectServices.updateProject(body, id);
     }
 
-    @Delete(':id')
-    public async deleteProject(@Param('id') id: string) {
+    @Delete(':projectId')
+    public async deleteProject(@Param('projectId') id: string) {
         return await this.projectServices.deleteProject(id);
     }
 }

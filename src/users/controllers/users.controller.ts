@@ -1,8 +1,14 @@
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UserDTO, UserToProjectDTO, UserUpdateDTO } from '../dto/user.dto';
 import { UsersService } from '../services/users.service';
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { PublicAccess } from 'src/auth/decorators/public.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { AdminAccess } from 'src/auth/decorators/admin.decorator';
 
 @Controller('users')
+@UseGuards(AuthGuard, RolesGuard)
 export class UsersController {
 
     constructor(private readonly usersService: UsersService) {}
@@ -12,12 +18,14 @@ export class UsersController {
         return await this.usersService.createUser(body);
     }
 
+    @Roles('BASIC')
     @Get('')
     public async findAllUsers() {
         return await this.usersService.findUsers();
         
     }
 
+    @PublicAccess()
     @Get(':id')
     public async findUserById(@Param('id') id: string) {
         return await this.usersService.findUserById(id);
