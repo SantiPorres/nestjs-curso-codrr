@@ -5,21 +5,26 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { UserDTO, UserToProjectDTO, UserUpdateDTO } from '../dto/user.dto';
 import { ErrorManager } from 'src/utils/error.manager';
 import { UserProjectEntity } from '../entities/usersProjects.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
 
   constructor(
-    @InjectRepository(UserEntity) 
-      private readonly userRepository: Repository<UserEntity>,
-    @InjectRepository(UserProjectEntity) 
-      private readonly userProjectRepository: Repository<UserProjectEntity>
-  ) {}
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(UserProjectEntity)
+    private readonly userProjectRepository: Repository<UserProjectEntity>
+  ) { }
 
   public async createUser(body: UserDTO): Promise<UserEntity> {
     try {
+      body.password = await bcrypt.hash(
+        body.password,
+        +process.env.HASH_SALT
+      );
       return await this.userRepository.save(body);
-    } catch(error) {
+    } catch (error) {
       throw ErrorManager.createSignatureError(error.message);
     }
   }
@@ -27,14 +32,14 @@ export class UsersService {
   public async findUsers(): Promise<UserEntity[]> {
     try {
       const users: UserEntity[] = await this.userRepository.find();
-      if(users.length === 0) {
+      if (users.length === 0) {
         throw new ErrorManager({
           type: 'NOT_FOUND',
           message: 'There were not results found'
         });
       }
       return users;
-    } catch(error) {
+    } catch (error) {
       throw ErrorManager.createSignatureError(error.message);
     }
   }
@@ -43,18 +48,18 @@ export class UsersService {
     try {
       const user: UserEntity = await this.userRepository
         .createQueryBuilder('user')
-        .where({id})
+        .where({ id })
         .leftJoinAndSelect('user.projectsIncludes', 'projectsIncludes')
         .leftJoinAndSelect('projectsIncludes.project', 'project')
         .getOne();
-      if(!user) {
+      if (!user) {
         throw new ErrorManager({
           type: 'NOT_FOUND',
           message: 'The user was not found'
         });
       }
       return user;
-    } catch(error) {
+    } catch (error) {
       throw ErrorManager.createSignatureError(error.message);
     }
   }
@@ -71,7 +76,7 @@ export class UsersService {
         });
       }
       return user;
-    } catch(error) {
+    } catch (error) {
       throw ErrorManager.createSignatureError(error.message);
     }
   }
@@ -86,7 +91,7 @@ export class UsersService {
         });
       }
       return user;
-    } catch(error) {
+    } catch (error) {
       throw ErrorManager.createSignatureError(error.message);
     }
   }
@@ -94,8 +99,25 @@ export class UsersService {
   public async relationToProject(body: UserToProjectDTO) {
     try {
       return await this.userProjectRepository.save(body);
-    } catch(error) {
+    } catch (error) {
       throw ErrorManager.createSignatureError(error);
+    }
+  }
+
+  public async findBy({ key, value }: {
+    key: keyof UserDTO;
+    value: any;
+  }) {
+    try {
+      const user: UserEntity = await this.userRepository
+        .createQueryBuilder('user')
+        .addSelect('user.password')
+        .where({ [key]: value })
+        .getOne();
+
+      return user;
+    } catch (error) {
+      throw ErrorManager.createSignatureError(error.message);
     }
   }
 }
