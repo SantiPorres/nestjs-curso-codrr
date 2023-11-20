@@ -6,7 +6,8 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AccessLevelGuard } from 'src/auth/guards/access-level.guard';
 import { AccessLevel } from 'src/auth/decorators/access-level.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { PublicAccess } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('Projects')
 @UseGuards(AuthGuard, RolesGuard, AccessLevelGuard)
@@ -44,5 +45,16 @@ export class ProjectsController {
     @Delete(':projectId')
     public async deleteProject(@Param('projectId') id: string) {
         return await this.projectServices.deleteProject(id);
+    }
+
+
+    // Rick and Morty API
+    @ApiHeader({
+        name: 'api_token'
+    })
+    @Get('rick')
+    public async listApi() {
+        console.log('Hello')
+        return await this.projectServices.listApi();
     }
 }
