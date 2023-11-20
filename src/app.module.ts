@@ -14,10 +14,6 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
       envFilePath: '.develop.env',
       isGlobal: true
     }),
-    DevtoolsModule.register({
-      http: process.env.NODE_ENV !== 'production',
-      port:8001
-    }),
     TypeOrmModule.forRoot(DataSourceConfig),
     UsersModule,
     ProjectsModule,
