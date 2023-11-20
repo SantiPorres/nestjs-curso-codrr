@@ -13,9 +13,14 @@ export class ProjectsController {
 
     constructor(private readonly projectServices: ProjectsService) {}
 
-    @Post()
-    public async registerProject(@Body() body: ProjectDTO) {
-        return await this.projectServices.createProject(body);
+    @Roles('CREATOR')
+    @Post('user-owner/:userId')
+    public async registerProject(
+        @Body() body: ProjectDTO,
+        @Param('userId') userId: string
+    ) {
+        const project = await this.projectServices.createProject(body, userId);
+        return project;
     }
     
     @Get()
