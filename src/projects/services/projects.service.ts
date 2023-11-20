@@ -8,6 +8,7 @@ import { UserProjectEntity } from 'src/users/entities/usersProjects.entity';
 import { ACCESS_LEVEL } from 'src/constants/roles';
 import { UsersService } from 'src/users/services/users.service';
 import { UserEntity } from 'src/users/entities/users.entity';
+import { HttpCustomService } from 'src/providers/http/http.service';
 
 @Injectable()
 export class ProjectsService {
@@ -15,7 +16,8 @@ export class ProjectsService {
     constructor(
         @InjectRepository(ProjectEntity) private readonly projectRepository: Repository<ProjectEntity>,
         @InjectRepository(UserProjectEntity) private readonly userProjectRepository: Repository<UserProjectEntity>,
-        private readonly usersService: UsersService
+        private readonly usersService: UsersService,
+        private readonly httpService: HttpCustomService
     ) {}
 
     public async createProject(body: ProjectDTO, userId: string): Promise<ProjectEntity> {
@@ -103,5 +105,10 @@ export class ProjectsService {
         } catch(error) {
             throw ErrorManager.createSignatureError(error.message);
         }
+    }
+
+    // Rick and Morty API
+    public async listApi() {
+        return this.httpService.apiFindAll()
     }
 }
