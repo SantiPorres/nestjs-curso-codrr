@@ -5,7 +5,6 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@n
 import { PublicAccess } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { AdminAccess } from 'src/auth/decorators/admin.decorator';
 
 @Controller('users')
 @UseGuards(AuthGuard, RolesGuard)
@@ -21,8 +20,8 @@ export class UsersController {
     @Roles('BASIC')
     @Get('')
     public async findAllUsers() {
-        return await this.usersService.findUsers();
-        
+        const users = await this.usersService.findUsers();
+        return users;
     }
 
     @PublicAccess()
@@ -42,6 +41,7 @@ export class UsersController {
     }
 
     // Relation user-project
+    @Roles('ADMIN')
     @Post('add-to-project')
     public async addToProject(@Body() body: UserToProjectDTO) {
         return await this.usersService.relationToProject(body);

@@ -5,6 +5,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AccessLevelGuard } from 'src/auth/guards/access-level.guard';
 import { AccessLevel } from 'src/auth/decorators/access-level.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @UseGuards(AuthGuard, RolesGuard, AccessLevelGuard)
 @Controller('projects')
@@ -16,7 +17,7 @@ export class ProjectsController {
     public async registerProject(@Body() body: ProjectDTO) {
         return await this.projectServices.createProject(body);
     }
-
+    
     @Get()
     public async findAllProjects() {
         return await this.projectServices.findProjects();
