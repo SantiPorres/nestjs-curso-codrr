@@ -1,8 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
 import { ACCESS_LEVEL_KEY, ADMIN_KEY, PUBLIC_KEY, ROLES_KEY } from 'src/constants/key-decorators';
-import { ACCESS_LEVEL, ROLES } from 'src/constants/roles';
+import { ROLES } from 'src/constants/roles';
 import { Request } from 'express';
 import { UsersService } from 'src/users/services/users.service';
 
